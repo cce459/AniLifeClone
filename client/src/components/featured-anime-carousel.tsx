@@ -3,13 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, ArrowRight } from "lucide-react";
 import { type Anime } from "@shared/schema";
+import AnimeCardActions from "@/components/anime-card-actions";
 
 interface FeaturedAnimeCarouselProps {
   onPlayAnime: (anime: Anime) => void;
 }
 
 export default function FeaturedAnimeCarousel({ onPlayAnime }: FeaturedAnimeCarouselProps) {
-  const { data: featuredAnimes = [], isLoading } = useQuery({
+  const { data: featuredAnimes = [], isLoading } = useQuery<Anime[]>({
     queryKey: ["/api/animes/featured"],
   });
 
@@ -43,7 +44,7 @@ export default function FeaturedAnimeCarousel({ onPlayAnime }: FeaturedAnimeCaro
         
         <div className="scroll-container overflow-x-auto pb-4">
           <div className="flex space-x-6 w-max">
-            {featuredAnimes.map((anime: Anime) => (
+            {featuredAnimes.map((anime) => (
               <Card
                 key={anime.id}
                 className="anime-card bg-secondary rounded-xl overflow-hidden w-80 flex-shrink-0 cursor-pointer"
@@ -57,6 +58,7 @@ export default function FeaturedAnimeCarousel({ onPlayAnime }: FeaturedAnimeCaro
                     className="w-full h-48 object-cover"
                     data-testid={`img-featured-${anime.id}`}
                   />
+                  <AnimeCardActions anime={anime} />
                 </div>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">

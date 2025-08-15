@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Play, Plus, ArrowDown } from "lucide-react";
 import { type Anime } from "@shared/schema";
+import AnimeCardActions from "@/components/anime-card-actions";
 
 interface HeroSectionProps {
   onPlayAnime: (anime: Anime) => void;
@@ -45,6 +46,21 @@ export default function HeroSection({ onPlayAnime }: HeroSectionProps) {
           최신 애니메이션을 HD 화질로 무료 시청하세요
         </p>
         
+        {/* Featured Anime Info */}
+        <div className="bg-black bg-opacity-50 rounded-xl p-6 mb-8 max-w-2xl mx-auto">
+          <h3 className="text-2xl font-bold mb-2 text-accent-cyan" data-testid="text-featured-anime-title">
+            오늘의 추천: {heroAnime.title}
+          </h3>
+          <p className="text-muted-foreground mb-4" data-testid="text-featured-anime-description">
+            {heroAnime.description}
+          </p>
+          <div className="flex items-center justify-center space-x-4 text-sm">
+            <span className="bg-accent-coral px-3 py-1 rounded-full">{heroAnime.genre}</span>
+            <span className="text-warning">★ {heroAnime.rating}</span>
+            <span className="text-muted-foreground">{heroAnime.episodeCount}화 {heroAnime.status}</span>
+          </div>
+        </div>
+        
         <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
           <Button
             onClick={() => onPlayAnime(heroAnime)}
@@ -57,6 +73,13 @@ export default function HeroSection({ onPlayAnime }: HeroSectionProps) {
           <Button
             variant="outline"
             className="border-2 border-accent-coral text-accent-coral px-8 py-4 rounded-lg font-semibold text-lg hover:bg-accent-coral hover:text-white transition-all duration-200"
+            onClick={() => {
+              const favorites = JSON.parse(localStorage.getItem('anilife_favorites') || '[]');
+              if (!favorites.includes(heroAnime.id)) {
+                favorites.push(heroAnime.id);
+                localStorage.setItem('anilife_favorites', JSON.stringify(favorites));
+              }
+            }}
             data-testid="button-add-to-list"
           >
             <Plus className="mr-2 h-5 w-5" />

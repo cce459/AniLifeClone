@@ -4,6 +4,7 @@ import FeaturedAnimeCarousel from "@/components/featured-anime-carousel";
 import CategoryGrid from "@/components/category-grid";
 import LatestAnimeGrid from "@/components/latest-anime-grid";
 import KoreanPopularSection from "@/components/korean-popular-section";
+import RecommendationsSection from "@/components/recommendations-section";
 import VideoPlayerModal from "@/components/video-player-modal";
 import Footer from "@/components/footer";
 import { useVideoPlayer } from "@/hooks/use-video-player";
@@ -21,6 +22,7 @@ export default function Home() {
         <CategoryGrid />
         <LatestAnimeGrid onPlayAnime={openPlayer} />
         <KoreanPopularSection onPlayAnime={openPlayer} />
+        <RecommendationsSection onPlayAnime={openPlayer} />
       </main>
 
       <Footer />

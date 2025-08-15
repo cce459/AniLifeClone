@@ -184,6 +184,10 @@ export class MemStorage implements IStorage {
       const createdAnime: Anime = {
         ...anime,
         id,
+        heroImageUrl: anime.heroImageUrl || null,
+        isKoreanOriginal: anime.isKoreanOriginal ?? false,
+        isFeatured: anime.isFeatured ?? false,
+        isLatest: anime.isLatest ?? false,
         createdAt: new Date(),
       };
       this.animes.set(id, createdAnime);
@@ -245,6 +249,10 @@ export class MemStorage implements IStorage {
     const anime: Anime = {
       ...insertAnime,
       id,
+      heroImageUrl: insertAnime.heroImageUrl || null,
+      isKoreanOriginal: insertAnime.isKoreanOriginal ?? false,
+      isFeatured: insertAnime.isFeatured ?? false,
+      isLatest: insertAnime.isLatest ?? false,
       createdAt: new Date(),
     };
     this.animes.set(id, anime);
@@ -266,6 +274,7 @@ export class MemStorage implements IStorage {
     const episode: Episode = {
       ...insertEpisode,
       id,
+      videoUrl: insertEpisode.videoUrl || null,
       createdAt: new Date(),
     };
     this.episodes.set(id, episode);
@@ -283,6 +292,8 @@ export class MemStorage implements IStorage {
     const progress: WatchProgress = {
       ...insertProgress,
       id,
+      completed: insertProgress.completed ?? false,
+      progressSeconds: insertProgress.progressSeconds ?? 0,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

@@ -4,13 +4,14 @@ import { Card } from "@/components/ui/card";
 import { Play, Filter } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { type Anime } from "@shared/schema";
+import AnimeCardActions from "@/components/anime-card-actions";
 
 interface LatestAnimeGridProps {
   onPlayAnime: (anime: Anime) => void;
 }
 
 export default function LatestAnimeGrid({ onPlayAnime }: LatestAnimeGridProps) {
-  const { data: latestAnimes = [], isLoading } = useQuery({
+  const { data: latestAnimes = [], isLoading } = useQuery<Anime[]>({
     queryKey: ["/api/animes/latest"],
   });
 
@@ -57,7 +58,7 @@ export default function LatestAnimeGrid({ onPlayAnime }: LatestAnimeGridProps) {
         </div>
         
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-          {latestAnimes.map((anime: Anime, index: number) => (
+          {latestAnimes.map((anime, index) => (
             <Card
               key={anime.id}
               className="anime-card bg-secondary rounded-lg overflow-hidden group cursor-pointer"
@@ -74,6 +75,7 @@ export default function LatestAnimeGrid({ onPlayAnime }: LatestAnimeGridProps) {
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
                   <Play className="text-white h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
+                <AnimeCardActions anime={anime} />
                 {index < 2 && (
                   <div className="absolute top-2 right-2 bg-accent-coral text-white text-xs px-2 py-1 rounded">
                     NEW

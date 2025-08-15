@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Search, Menu, Play, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,12 +12,14 @@ interface NavigationHeaderProps {
 export default function NavigationHeader({ onPlayAnime }: NavigationHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [, setLocation] = useLocation();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // TODO: Implement search functionality
-      console.log("Searching for:", searchQuery);
+      setLocation(`/search?q=${encodeURIComponent(searchQuery)}`);
+    } else {
+      setLocation('/search');
     }
   };
 
@@ -39,11 +41,8 @@ export default function NavigationHeader({ onPlayAnime }: NavigationHeaderProps)
               <Link href="/" className="text-text-primary hover:text-accent-cyan transition-colors duration-200 font-medium" data-testid="link-home-nav">
                 홈
               </Link>
-              <Link href="/latest" className="text-muted-foreground hover:text-accent-cyan transition-colors duration-200" data-testid="link-latest">
-                최신작
-              </Link>
-              <Link href="/popular" className="text-muted-foreground hover:text-accent-cyan transition-colors duration-200" data-testid="link-popular">
-                인기작
+              <Link href="/search" className="text-muted-foreground hover:text-accent-cyan transition-colors duration-200" data-testid="link-search">
+                검색
               </Link>
               <Link href="/genres" className="text-muted-foreground hover:text-accent-cyan transition-colors duration-200" data-testid="link-genres">
                 장르별

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X, Play, Pause, Volume2, VolumeX, Maximize, SkipForward, SkipBack } from "lucide-react";
 import { type Anime, type Episode } from "@shared/schema";
+import AnimeCardActions from "@/components/anime-card-actions";
 
 interface VideoPlayerModalProps {
   isOpen: boolean;
@@ -19,12 +20,69 @@ export default function VideoPlayerModal({ isOpen, anime, episodes, onClose }: V
   const [progress, setProgress] = useState(0);
   const [subtitle, setSubtitle] = useState("korean");
   const [quality, setQuality] = useState("1080p");
+  const [watchTimer, setWatchTimer] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (episodes.length > 0) {
       setCurrentEpisode(episodes[0]);
     }
   }, [episodes]);
+
+  // Watch progress tracking
+  useEffect(() => {
+    if (isPlaying && anime) {
+      const timer = setInterval(() => {
+        setProgress(prev => {
+          const newProgress = Math.min(prev + 1, 1440); // Max 24 minutes
+          
+          // Save to watch history every 30 seconds
+          if (newProgress % 30 === 0) {
+            const progressPercent = Math.round((newProgress / 1440) * 100);
+            const completed = progressPercent >= 90;
+            
+            // Save to localStorage
+            const watchHistory = JSON.parse(localStorage.getItem('anilife_watch_history') || '[]');
+            const existingIndex = watchHistory.findIndex((item: any) => item.anime.id === anime.id);
+            
+            const historyItem = {
+              anime,
+              lastWatched: new Date().toISOString(),
+              progress: progressPercent,
+              completed
+            };
+            
+            if (existingIndex >= 0) {
+              watchHistory[existingIndex] = historyItem;
+            } else {
+              watchHistory.unshift(historyItem);
+            }
+            
+            localStorage.setItem('anilife_watch_history', JSON.stringify(watchHistory.slice(0, 50)));
+          }
+          
+          return newProgress;
+        });
+      }, 1000);
+      
+      setWatchTimer(timer);
+      return () => {
+        clearInterval(timer);
+        setWatchTimer(null);
+      };
+    } else if (watchTimer) {
+      clearInterval(watchTimer);
+      setWatchTimer(null);
+    }
+  }, [isPlaying, anime]);
+
+  // Cleanup on component unmount
+  useEffect(() => {
+    return () => {
+      if (watchTimer) {
+        clearInterval(watchTimer);
+      }
+    };
+  }, [watchTimer]);
 
   const handleEpisodeChange = (episode: Episode) => {
     setCurrentEpisode(episode);

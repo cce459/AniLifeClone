@@ -3,13 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, Play } from "lucide-react";
 import { type Anime } from "@shared/schema";
+import AnimeCardActions from "@/components/anime-card-actions";
 
 interface KoreanPopularSectionProps {
   onPlayAnime: (anime: Anime) => void;
 }
 
 export default function KoreanPopularSection({ onPlayAnime }: KoreanPopularSectionProps) {
-  const { data: koreanAnimes = [], isLoading } = useQuery({
+  const { data: koreanAnimes = [], isLoading } = useQuery<Anime[]>({
     queryKey: ["/api/animes/korean"],
   });
 
@@ -57,19 +58,22 @@ export default function KoreanPopularSection({ onPlayAnime }: KoreanPopularSecti
         </div>
         
         <div className="grid md:grid-cols-2 gap-8">
-          {koreanAnimes.slice(0, 2).map((anime: Anime) => (
+          {koreanAnimes.slice(0, 2).map((anime) => (
             <Card
               key={anime.id}
               className="anime-card bg-secondary rounded-xl overflow-hidden cursor-pointer"
               onClick={() => onPlayAnime(anime)}
               data-testid={`card-korean-${anime.id}`}
             >
-              <img
-                src={anime.thumbnailUrl}
-                alt={anime.title}
-                className="w-full h-48 object-cover"
-                data-testid={`img-korean-${anime.id}`}
-              />
+              <div className="relative">
+                <img
+                  src={anime.thumbnailUrl}
+                  alt={anime.title}
+                  className="w-full h-48 object-cover"
+                  data-testid={`img-korean-${anime.id}`}
+                />
+                <AnimeCardActions anime={anime} />
+              </div>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-3">
                   <span className="bg-accent-coral text-white text-xs px-3 py-1 rounded-full font-medium">
@@ -115,7 +119,7 @@ export default function KoreanPopularSection({ onPlayAnime }: KoreanPopularSecti
         
         {/* Additional Korean Content Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-          {koreanAnimes.slice(2).map((anime: Anime) => (
+          {koreanAnimes.slice(2).map((anime) => (
             <Card
               key={anime.id}
               className="anime-card bg-primary rounded-lg overflow-hidden group cursor-pointer"
@@ -132,6 +136,7 @@ export default function KoreanPopularSection({ onPlayAnime }: KoreanPopularSecti
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
                   <Play className="text-white h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
+                <AnimeCardActions anime={anime} />
               </div>
               <div className="p-3">
                 <h4 className="font-semibold text-sm truncate" data-testid={`text-korean-small-title-${anime.id}`}>
